@@ -1,3 +1,4 @@
+using AutoMapper;
 using CourseApi.DbContexts;
 using CourseApi.Service;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace CourseLibrary.API
 {
@@ -21,9 +23,15 @@ namespace CourseLibrary.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers();
-             
-            services.AddScoped<ICourseLibraryRepository, CourseLibraryRepository>();
+            //quite important for json serialization
+           services.AddControllers()
+                   .AddNewtonsoftJson(options =>
+                   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            //adding AutoMapper into or configure services
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+           
+           services.AddScoped<ICourseLibraryRepository, CourseLibraryRepository>();
 
             services.AddDbContext<CourseLibraryContext>(options =>
             {

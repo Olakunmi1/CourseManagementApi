@@ -1,5 +1,6 @@
 ﻿using CourseApi.DbContexts;
 using CourseApi.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace CourseApi.Service
             {
                 var exceptn = ex;
                 //--- log to db
+                
             }
         }
 
@@ -95,18 +97,36 @@ namespace CourseApi.Service
 
         public Author GetAuthor(int authorId)
         {
-            var SingleAuthor = _context.Authors.FirstOrDefault(a => a.ID == authorId);
-            if (SingleAuthor == null)
+            try
             {
-                throw new ArgumentNullException(nameof(authorId));
+                var SingleAuthor = _context.Authors.FirstOrDefault(a => a.ID == authorId);
+                if (SingleAuthor == null)
+                {
+                    throw new ArgumentNullException(nameof(authorId));
+                }
+                return SingleAuthor;
             }
-            return SingleAuthor;
+
+            catch (Exception ex)
+            {
+                //log exception
+                //var excptn = ex;
+                return null;
+            }
         }
+
+        //public List<Author> GetAuthors()
+        //{
+        //    return _context.Authors.ToList()
+        //                       .OrderBy(a => a.FirstName);
+        //}
 
         public IEnumerable<Author> GetAuthors()
         {
-            return _context.Authors.ToList()
-                               .OrderBy(a => a.FirstName);
+            return _context.Authors
+                                //.Include(c => c.Courses)
+                               .OrderBy(a => a.FirstName)
+                               .ToList();
         }
 
         public IEnumerable<Author> GetAuthors(IEnumerable<int> authorIds)
@@ -120,30 +140,53 @@ namespace CourseApi.Service
 
         public Course GetCourse(int authorId, int courseId)
         {
-           
+            try
+            {
                 var author = _context.Authors.FirstOrDefault(a => a.ID == authorId);
-                var course = _context.Courses.FirstOrDefault(c => c.ID == courseId);
-                if (author == null && course == null)
+                var course = _context.Courses.FirstOrDefault(c => c.ID == courseId && c.AuthorId == authorId);
+                if (author == null)
                 {
-                    throw new ArgumentNullException("AuthorId or courseId is Invalid");
+                    throw new ArgumentNullException("AuthorId is Invalid");
+                }
+
+                if (course == null)
+                {
+                    throw new ArgumentNullException("No course found for this Author");
                 }
 
                 return course;
+            }
+            catch(Exception ex)
+            {
+                //log the ex
+                return null;
+            }
         }
 
         public IEnumerable<Course> GetCourses(int authorId)
         {
-            //grab single author
-            var author = _context.Authors.FirstOrDefault(a => a.ID == authorId);
-            if(author == null)
+            try
             {
-                throw new ArgumentNullException(nameof(authorId)); // nameof() is used to capture name of a variable
+                //grab single author
+                var AuhtorCheck = _context.Authors.FirstOrDefault(a => a.ID == authorId);
+                if (AuhtorCheck == null)
+                {
+                    throw new ArgumentNullException(nameof(authorId)); // nameof() is used to capture name of a variable
+                }
+
+                var courses = _context.Courses
+                               .Where(c => c.AuthorId == authorId)
+                               .OrderBy(c => c.Title).ToList();
+                return courses;
             }
 
-            var courses = _context.Courses
-                                .Where(c => c.AuthorId == authorId)
-                                .OrderBy(c => c.Title).ToList();
-            return courses;
+            catch (Exception ex)
+            {
+                //log the ex
+                return null;
+            }
+
+           
         }
 
         public bool Save()

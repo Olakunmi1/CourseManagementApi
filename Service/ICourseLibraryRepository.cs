@@ -13,6 +13,8 @@ namespace CourseApi.Service
         void AddCourse(int authorId, Course course);
         void UpdateCourse(Course course);
         void DeleteCourse(Course course);
+        //List<Author> GetAuthors();
+
         IEnumerable<Author> GetAuthors();
         Author GetAuthor(int authorId);
         IEnumerable<Author> GetAuthors(IEnumerable<int> authorIds);
