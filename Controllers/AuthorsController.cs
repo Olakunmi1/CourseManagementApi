@@ -69,39 +69,49 @@ namespace CourseApi.Controllers
         [HttpGet("GetSingleAuthor/{authorId}")]
         public IActionResult GetSingleAuthor(int authorId)
         {
-            var singleAuthor = _courseLibrary.GetAuthor(authorId);
-           
-            if (singleAuthor == null)
+            try
             {
-                return NotFound(new JsonResponse<string>()
+                var singleAuthor = _courseLibrary.GetAuthor(authorId);
+
+                if (singleAuthor == null)
                 {
-                    Success = false,
-                    ErrorMessage = "Author Not found, Invalid Id."
+                    return NotFound(new JsonResponse<string>()
+                    {
+                        Success = false,
+                        ErrorMessage = "Author Not found, Invalid Id."
+                    });
+
+                }
+
+                //using Automapper instead for cleaner code
+                //the return type first(destination), then the source
+                var auhtor = _mapper.Map<AuhtorDTO>(singleAuthor);
+
+                //var SingleAuthorDTO = new AuhtorDTO()
+                //{
+                //    ID = singleAuthor.ID,
+                //    Name = $"{singleAuthor.FirstName} {singleAuthor.LastName}",
+                //    Age = DateTimeOffSetExtensions.GetCurrentAge(singleAuthor.DateOfBirth),
+                //    MainCategory = singleAuthor.MainCategory,
+                //    Courses = singleAuthor.Courses
+                //};
+
+                return Ok(new JsonResponses<AuhtorDTO>()
+                {
+                    Success = true,
+                    Result = new List<AuhtorDTO>() {
+                    auhtor
+                }
                 });
-                
             }
 
-            //using Automapper instead for cleaner code
-            //the return type first(destination), then the source
-            var auhtor = _mapper.Map<AuhtorDTO>(singleAuthor);
-
-            //var SingleAuthorDTO = new AuhtorDTO()
-            //{
-            //    ID = singleAuthor.ID,
-            //    Name = $"{singleAuthor.FirstName} {singleAuthor.LastName}",
-            //    Age = DateTimeOffSetExtensions.GetCurrentAge(singleAuthor.DateOfBirth),
-            //    MainCategory = singleAuthor.MainCategory,
-            //    Courses = singleAuthor.Courses
-            //};
-
-            return Ok(new JsonResponse<AuhtorDTO>()
+            catch(Exception ex)
             {
-                Success = true,
-                Result = new List<AuhtorDTO>() {
-                    auhtor
-                } 
+                //log ex
+                var messg = "Something went wrong, pls try again later";
+                return StatusCode(500, messg);
+            }
 
-            });
         }
 
     }

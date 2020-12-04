@@ -175,6 +175,7 @@ namespace CourseApi.Service
                 }
 
                 var courses = _context.Courses
+                              // .Include(a => a.Author)
                                .Where(c => c.AuthorId == authorId)
                                .OrderBy(c => c.Title).ToList();
                 return courses;
