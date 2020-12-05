@@ -17,6 +17,9 @@ namespace CourseApi.DbContexts
         public DbSet<Author> Authors { get; set; }
         public DbSet<Course> Courses { get; set; }
 
+        public DbSet<SystemErrorLog> systemErrorLogs { get; set; }
+
+
         // seed the database with dummy data
         //using an overide method "onModelCreating"
         protected override void OnModelCreating(ModelBuilder modelBuilder)

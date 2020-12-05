@@ -13,9 +13,12 @@ namespace CourseApi.Service
         void AddCourse(int authorId, Course course);
         void UpdateCourse(Course course);
         void DeleteCourse(Course course);
-        //List<Author> GetAuthors();
+        //List<Author> GetAuthors()
+
+        List<SystemErrorLog> LogErrorMessage(string errorMessage, string errorSource);
 
         IEnumerable<Author> GetAuthors();
+        IEnumerable<Author> GetAuthors(string mainCategory, string searchQuery);
         Author GetAuthor(int authorId);
         IEnumerable<Author> GetAuthors(IEnumerable<int> authorIds);
         void AddAuthor(Author author);

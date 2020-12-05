@@ -26,11 +26,11 @@ namespace CourseApi.Controllers
         }
 
         [HttpGet("GetAllAuthors")]
-        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors()
+        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors(string mainCategory, string searchQuery)
         {
             try
             {
-                var GetAllAuthors = _courseLibrary.GetAuthors();
+                var GetAllAuthors = _courseLibrary.GetAuthors(mainCategory, searchQuery);
 
                 //using Automapper for cleaner code instead of select Query,(seee below)
                 //the return type first(destination), then the source
@@ -59,8 +59,18 @@ namespace CourseApi.Controllers
             catch(Exception ex)
             {
                 //log ex
-                var messg = "Something went wrong, pls try again later";
-                return StatusCode(500, messg);
+                var path = HttpContext.Request.Path;
+                var query = HttpContext.Request.QueryString;
+                var pathAndQuery = path + query;
+                var messg = _courseLibrary.LogErrorMessage(ex.Message, pathAndQuery);
+                return Ok(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "Sorry, something just went wrong while processing your request! Pls Try Again."
+                });
+
+
+                //return StatusCode(500, messg);
             }
 
            // return Ok(GetAllAuthors);
