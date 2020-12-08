@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CourseApi.ReadDTO;
 using CourseApi.Service;
+using CourseApi.WriteDTO;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace CourseApi.Controllers
             }
         }
 
-        [HttpGet("{courseId}")]
+        [HttpGet("{courseId}", Name = "getCourseForAnAuthor")]
         public ActionResult<CoursesDTO> GetCourseForAuthor(int authorId, int courseId)
         {
             try
@@ -89,6 +90,37 @@ namespace CourseApi.Controllers
                 return StatusCode(500, "Something went wrong, pls try again later");
             }
 
+        }
+
+
+        [HttpPost("createCourseForAuthor")]
+        public ActionResult<CoursesDTO> CreateCourseForAuthor(int authorId, createCourseForAuthorDTOW createCourse)
+        {
+            //check if the author exists
+            var singleauthor = _courseLibrary.GetAuthor(authorId);
+            if(singleauthor == null)
+            {
+                return NotFound(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "AuthorId is Invalid."
+                });
+            }
+            var course = _mapper.Map<Entities.Course>(createCourse);
+            //course.ID = authorId;
+            _courseLibrary.AddCourse(authorId, course);
+            _courseLibrary.Save();
+
+            var createdCourse = _mapper.Map<CoursesDTO>(course);
+
+            return CreatedAtRoute("getCourseForAnAuthor", new { authorId = authorId, courseId = createdCourse.ID }, createdCourse);
+            //return Ok(new JsonResponses<AuhtorDTO>()
+            //{
+            //    Success = true,
+            //    Result = new List<AuhtorDTO>() {
+            //        createdAuthor
+            //    }
+            //});
         }
     }
 }

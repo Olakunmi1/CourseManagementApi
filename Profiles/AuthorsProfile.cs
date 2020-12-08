@@ -23,7 +23,7 @@ namespace CourseApi.Profiles
                 .ForMember(dest => dest.Age,
                 opt => opt.MapFrom(src => DateTimeOffSetExtensions.GetCurrentAge(src.DateOfBirth)));
 
-            
+            CreateMap<WriteDTO.AuthorDTOW, Entities.Author>();
         }
     }
 }

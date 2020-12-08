@@ -11,8 +11,10 @@ namespace CourseApi.Profiles
         public CourseProfile()
         {
             CreateMap<Entities.Course, ReadDTO.CoursesDTO>();
-                //.ForMember(dest => dest.AuthorName,
-                //opt => opt.MapFrom(src => src.AuthorId));
+            //.ForMember(dest => dest.AuthorName,
+            //opt => opt.MapFrom(src => src.AuthorId));
+
+            CreateMap<WriteDTO.createCourseForAuthorDTOW, Entities.Course>();
         }
     }
 } 

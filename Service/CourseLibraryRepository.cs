@@ -139,7 +139,7 @@ namespace CourseApi.Service
             var errormessageParam = new SqlParameter("errormessage", errorMessage);
             var errorsourceParam = new SqlParameter("errorsource", errorSource);
 
-            var exLog = _context.systemErrorLogs.FromSqlRaw("[dbo].[LOG_SYSTEM_EXCEPTION] @errormessage, @errorsource", errormessageParam, errorsourceParam).ToList();
+            var exLog = _context.systemErrorLogs.FromSqlRaw("[dbo].[LOG_ERROR_TO_SYS_ERR_TABLE_1] @errormessage, @errorsource", errormessageParam, errorsourceParam).ToList();
 
             // var result = dbContext.Database.SqlQuery<int>("[dbo].[SPH_LOG_ERROR_TO_SYS_ERR_TABLE] @username, @errormessage, @errorsource", usernameParam, errormessageParam, errorsourceParam).SingleOrDefaultAsync();
 
@@ -149,7 +149,7 @@ namespace CourseApi.Service
         //get Auhtors wth mainCategory for filtering purpose and searching
         public IEnumerable<Author> GetAuthors(string mainCategory, string searchQuery)
         {
-            throw new ArgumentNullException();
+            //throw new ArgumentNullException();
 
             if (string.IsNullOrWhiteSpace(mainCategory) && string.IsNullOrWhiteSpace(searchQuery))
             {

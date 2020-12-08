@@ -6,6 +6,7 @@ using AutoMapper;
 using CourseApi.Helpers;
 using CourseApi.ReadDTO;
 using CourseApi.Service;
+using CourseApi.WriteDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -76,7 +77,7 @@ namespace CourseApi.Controllers
            // return Ok(GetAllAuthors);
         }
 
-        [HttpGet("GetSingleAuthor/{authorId}")]
+        [HttpGet("GetSingleAuthor/{authorId}", Name = "getAuhtors")]
         public IActionResult GetSingleAuthor(int authorId)
         {
             try
@@ -120,8 +121,28 @@ namespace CourseApi.Controllers
                 //log ex
                 var messg = "Something went wrong, pls try again later";
                 return StatusCode(500, messg);
-            }
+            } 
 
+        }
+
+        [HttpPost("CreateAuthor")]
+        public ActionResult<AuhtorDTO> CreateAuthor(AuthorDTOW author)
+        {
+           
+            var auhtorr = _mapper.Map<Entities.Author>(author);
+            _courseLibrary.AddAuthor(auhtorr);
+            _courseLibrary.Save();
+
+            var createdAuthor = _mapper.Map<AuhtorDTO>(auhtorr);
+
+            return CreatedAtRoute("getAuhtors", new { authorId = createdAuthor.ID }, createdAuthor);
+            //return Ok(new JsonResponses<AuhtorDTO>()
+            //{
+            //    Success = true,
+            //    Result = new List<AuhtorDTO>() {
+            //        createdAuthor
+            //    }
+            //});
         }
 
     }
