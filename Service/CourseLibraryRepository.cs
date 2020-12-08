@@ -1,5 +1,6 @@
 ﻿using CourseApi.DbContexts;
 using CourseApi.Entities;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -35,6 +36,34 @@ namespace CourseApi.Service
                 
             }
         }
+
+        //uisng EfCore Bulk Extension to add bulk records to DB
+        public void AddAuthors(List<Author> authors)
+        {
+            //var auhtorssss = new List<Author>();
+            //auhtorssss.Add(new Author()
+            //{
+            //     FirstName = "joe",
+            //      LastName = "kafff",
+            //       MainCategory = "Ment"
+
+            //});
+            try
+            {
+                if (authors == null)
+                {
+                    throw new ArgumentNullException(nameof(authors));
+                }
+                _context.BulkInsert(authors);
+            }
+            catch (Exception ex)
+            {
+                var exceptn = ex;
+                //--- log to db
+
+            }
+        }
+
 
         public void AddCourse(int authorId, Course course)
         {

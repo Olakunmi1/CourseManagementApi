@@ -15,6 +15,8 @@ namespace CourseApi.Service
         void DeleteCourse(Course course);
         //List<Author> GetAuthors()
 
+        //bulk authors
+        void AddAuthors(List<Author> authors);
         List<SystemErrorLog> LogErrorMessage(string errorMessage, string errorSource);
 
         IEnumerable<Author> GetAuthors();
