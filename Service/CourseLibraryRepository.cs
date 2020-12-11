@@ -288,10 +288,20 @@ namespace CourseApi.Service
 
         public void UpdateCourse(Course course)
         {
-            var singleCourse = _context.Courses.FirstOrDefault(c => c.ID == course.ID);
-
-            singleCourse.Title = course.Title;
-            singleCourse.Description = course.Description;
+            try
+            {
+                var singleCourse = _context.Courses.FirstOrDefault(c => c.ID == course.ID);
+                if(singleCourse == null)
+                {
+                    throw new ArgumentNullException(nameof(course));
+                }
+                singleCourse.Title = course.Title;
+                singleCourse.Description = course.Description;
+            }
+            catch(Exception ex)
+            {
+               // return ArgumentNullException();
+            }
            // singleCourse.AuthorId = course.AuthorId;
         }
     }

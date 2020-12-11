@@ -23,10 +23,15 @@ namespace CourseLibrary.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //quite important for json serialization
+            //quite important for json serialization--support for json input and output json
            services.AddControllers()
                    .AddNewtonsoftJson(options =>
                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            //lets add support for xml input and output formatter...
+            services.AddControllers(setupAction => {
+                setupAction.ReturnHttpNotAcceptable = true;
+            }).AddXmlDataContractSerializerFormatters();
 
             //adding AutoMapper into or configure services
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

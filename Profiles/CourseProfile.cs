@@ -15,6 +15,8 @@ namespace CourseApi.Profiles
             //opt => opt.MapFrom(src => src.AuthorId));
 
             CreateMap<WriteDTO.createCourseForAuthorDTOW, Entities.Course>();
+
+            CreateMap<WriteDTO.CourseForUpdateDTO, Entities.Course>();
         }
     }
 } 

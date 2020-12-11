@@ -8,16 +8,16 @@ namespace CourseApi.WriteDTO
 {
     public class AuthorDTOW
     {
-        [Required]
+        [Required(ErrorMessage ="You should fill out the firstName field")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "LastName field also required")]
         public string LastName { get; set; }
 
         [Required]
         public DateTime dateOfBirth { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "You should fill out the mainCategory field")]
         public string MainCategory { get; set; }
 
         public ICollection<createCourseForAuthorDTOW> Courses { get; set; }

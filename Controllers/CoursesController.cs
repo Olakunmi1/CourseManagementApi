@@ -61,13 +61,22 @@ namespace CourseApi.Controllers
         {
             try
             {
+                var AuthorExist = _courseLibrary.AuthorExists(authorId);
+                if (!AuthorExist)
+                {
+                    return NotFound(new JsonResponse<string>()
+                    {
+                        Success = false,
+                        ErrorMessage = "AuthorId is Invalid."
+                    });
+                }
                 var AuthorsCourse = _courseLibrary.GetCourse(authorId, courseId);
                 if (AuthorsCourse == null)
                 {
                     return NotFound(new JsonResponse<string>()
                     {
                         Success = false,
-                        ErrorMessage = "AuthorId is Invalid."
+                        ErrorMessage = "CourseId is Invalid."
                     });
                 }
 
@@ -121,6 +130,36 @@ namespace CourseApi.Controllers
             //        createdAuthor
             //    }
             //});
+        }
+
+        [HttpPut("{courseId}")]
+        public IActionResult UpdateCourseForAuthor(int authorId, int courseId, CourseForUpdateDTO courseForUpdate)
+        {
+            var AuthorExist = _courseLibrary.AuthorExists(authorId);
+            if (!AuthorExist)
+            {
+                return NotFound(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "AuthorId is Invalid."
+                });
+            }
+            var AuthorsCourse = _courseLibrary.GetCourse(authorId, courseId);
+            if (AuthorsCourse == null)
+            {
+                return NotFound(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "CourseId is Invalid."
+                });
+            }
+
+            var CourseforAuthor = _mapper.Map<Entities.Course>(courseForUpdate);
+            _courseLibrary.UpdateCourse(CourseforAuthor);
+            _courseLibrary.Save();
+            return NoContent();
+
+           // return null;
         }
     }
 }
