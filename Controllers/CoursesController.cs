@@ -154,8 +154,10 @@ namespace CourseApi.Controllers
                 });
             }
 
+            courseForUpdate.ID = courseId;
             var CourseforAuthor = _mapper.Map<Entities.Course>(courseForUpdate);
             _courseLibrary.UpdateCourse(CourseforAuthor);
+
             _courseLibrary.Save();
             return NoContent();
 

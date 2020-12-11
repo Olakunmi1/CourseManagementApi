@@ -8,6 +8,8 @@ namespace CourseApi.WriteDTO
 {
     public class CourseForUpdateDTO
     {
+        public int ID { get; set; }
+
         [Required]
         public string Description { get; set; }
 
