@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 using System;
 
 namespace CourseLibrary.API
@@ -24,9 +25,19 @@ namespace CourseLibrary.API
         public void ConfigureServices(IServiceCollection services)
         {
             //quite important for json serialization--support for json input and output json
-           services.AddControllers()
-                   .AddNewtonsoftJson(options =>
-                   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers()
+                     .AddNewtonsoftJson(options =>
+                     {
+                         options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                     });
+             //.AddNewtonsoftJson(options =>
+             // {
+             //     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+             // });
+            //.AddNewtonsoftJson(options =>
+            //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 
             //lets add support for xml input and output formatter...
             services.AddControllers(setupAction => {

@@ -2,6 +2,7 @@
 using CourseApi.ReadDTO;
 using CourseApi.Service;
 using CourseApi.WriteDTO;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -162,6 +163,40 @@ namespace CourseApi.Controllers
             return NoContent();
 
            // return null;
+        }
+
+        [HttpPatch("updateCoursesPartially/{courseId}")]
+        public IActionResult UpdateCourses_Patch(int authorId, int courseId, JsonPatchDocument<CourseForUpdateDTO> jsonPatchDocument)
+        {
+            //check if Authro and course Ids are valid 
+            var AuthorExist = _courseLibrary.AuthorExists(authorId);
+            if (!AuthorExist)
+            {
+                return NotFound(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "AuthorId is Invalid."
+                });
+            }
+            var AuthorsCourse = _courseLibrary.GetCourse(authorId, courseId);
+            if (AuthorsCourse == null)
+            {
+                return NotFound(new JsonResponse<string>()
+                {
+                    Success = false,
+                    ErrorMessage = "CourseId is Invalid."
+                });
+            }
+
+            var CourseToPatch = _mapper.Map<CourseForUpdateDTO>(AuthorsCourse);
+            jsonPatchDocument.ApplyTo(CourseToPatch);
+
+            var CourseforAuthor = _mapper.Map(CourseToPatch,AuthorsCourse);
+            _courseLibrary.UpdateCourse(CourseforAuthor);
+
+            _courseLibrary.Save();
+            return NoContent();
+            //return null;
         }
     }
 }
