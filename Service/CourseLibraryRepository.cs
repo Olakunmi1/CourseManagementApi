@@ -1,5 +1,6 @@
 ﻿using CourseApi.DbContexts;
 using CourseApi.Entities;
+using CourseApi.ReadDTO;
 using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -176,33 +177,33 @@ namespace CourseApi.Service
         }
 
         //get Auhtors wth mainCategory for filtering purpose and searching
-        public IEnumerable<Author> GetAuthors(string mainCategory, string searchQuery)
+        public IEnumerable<Author> GetAuthors(AuhtorResourceParameters auhtorResourceParameters)
         {
             //throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(mainCategory) && string.IsNullOrWhiteSpace(searchQuery))
+            if (string.IsNullOrWhiteSpace(auhtorResourceParameters.mainCategory) && string.IsNullOrWhiteSpace(auhtorResourceParameters.searchQuery))
             {
                 return GetAuthors();
             }
 
             var collections = _context.Authors as IQueryable<Author>;
 
-            if (!string.IsNullOrWhiteSpace(mainCategory))
+            if (!string.IsNullOrWhiteSpace(auhtorResourceParameters.mainCategory))
             {
-                mainCategory = mainCategory.Trim();
+                auhtorResourceParameters.mainCategory = auhtorResourceParameters.mainCategory.Trim();
 
-                collections = collections.Where(m => m.MainCategory == mainCategory);
+                collections = collections.Where(m => m.MainCategory == auhtorResourceParameters.mainCategory);
               //  return collections;
             }
 
             //implemenent searching 
-            if (!string.IsNullOrWhiteSpace(searchQuery))
+            if (!string.IsNullOrWhiteSpace(auhtorResourceParameters.searchQuery))
             {
-                searchQuery = searchQuery.Trim();
+                auhtorResourceParameters.searchQuery = auhtorResourceParameters.searchQuery.Trim();
 
-                collections = collections.Where(m => m.MainCategory.Contains(searchQuery)
-                || m.FirstName.Contains(searchQuery)
-                || m.LastName.Contains(searchQuery));
+                collections = collections.Where(m => m.MainCategory.Contains(auhtorResourceParameters.searchQuery)
+                || m.FirstName.Contains(auhtorResourceParameters.searchQuery)
+                || m.LastName.Contains(auhtorResourceParameters.searchQuery));
                
             }
 

@@ -27,11 +27,11 @@ namespace CourseApi.Controllers
         }
 
         [HttpGet("GetAllAuthors")]
-        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors(string mainCategory, string searchQuery)
+        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors(AuhtorResourceParameters auhtorResourceParameters)
         {
             try
             {
-                var GetAllAuthors = _courseLibrary.GetAuthors(mainCategory, searchQuery);
+                var GetAllAuthors = _courseLibrary.GetAuthors(auhtorResourceParameters);
 
                 //using Automapper for cleaner code instead of select Query,(seee below)
                 //the return type first(destination), then the source
