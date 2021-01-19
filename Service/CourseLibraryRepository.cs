@@ -181,10 +181,10 @@ namespace CourseApi.Service
         {
             //throw new ArgumentNullException();
 
-            if (string.IsNullOrWhiteSpace(auhtorResourceParameters.mainCategory) && string.IsNullOrWhiteSpace(auhtorResourceParameters.searchQuery))
-            {
-                return GetAuthors();
-            }
+            //if (string.IsNullOrWhiteSpace(auhtorResourceParameters.mainCategory) && string.IsNullOrWhiteSpace(auhtorResourceParameters.searchQuery))
+            //{
+            //    return GetAuthors();
+            //}
 
             var collections = _context.Authors as IQueryable<Author>;
 
@@ -207,7 +207,12 @@ namespace CourseApi.Service
                
             }
 
-               return collections.ToList();
+            //apply the paging here before TOList is called
+
+               return collections
+                .Skip(auhtorResourceParameters.pageSize * (auhtorResourceParameters.PageNumber - 1)) // ths 
+                .Take(auhtorResourceParameters.pageSize)
+                .ToList();
         }
 
 

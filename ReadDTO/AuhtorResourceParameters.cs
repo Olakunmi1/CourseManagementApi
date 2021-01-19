@@ -11,7 +11,7 @@ namespace CourseApi.ReadDTO
         public string mainCategory { get; set; }
         public string searchQuery { get; set; }
         public int PageNumber { get; set; } = 1;
-        public int _pageSize { get; set; } = 10;
+        private int _pageSize { get; set; } = 10;
         public int pageSize
         {
             get => _pageSize;

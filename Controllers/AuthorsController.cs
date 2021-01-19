@@ -27,7 +27,7 @@ namespace CourseApi.Controllers
         }
 
         [HttpGet("GetAllAuthors")]
-        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors(AuhtorResourceParameters auhtorResourceParameters)
+        public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors([FromQuery] AuhtorResourceParameters auhtorResourceParameters)
         {
             try
             {
