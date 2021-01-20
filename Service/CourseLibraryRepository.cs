@@ -1,5 +1,6 @@
 ﻿using CourseApi.DbContexts;
 using CourseApi.Entities;
+using CourseApi.Helpers;
 using CourseApi.ReadDTO;
 using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
@@ -177,7 +178,7 @@ namespace CourseApi.Service
         }
 
         //get Auhtors wth mainCategory for filtering purpose and searching
-        public IEnumerable<Author> GetAuthors(AuhtorResourceParameters auhtorResourceParameters)
+        public PagedList<Author> GetAuthors(AuhtorResourceParameters auhtorResourceParameters)
         {
             //throw new ArgumentNullException();
 
@@ -209,10 +210,11 @@ namespace CourseApi.Service
 
             //apply the paging here before TOList is called
 
-               return collections
-                .Skip(auhtorResourceParameters.pageSize * (auhtorResourceParameters.PageNumber - 1)) // ths 
-                .Take(auhtorResourceParameters.pageSize)
-                .ToList();
+            return PagedList<Author>.Create(collections, auhtorResourceParameters.PageNumber, auhtorResourceParameters.pageSize);
+               //return collections
+               // .Skip(auhtorResourceParameters.pageSize * (auhtorResourceParameters.PageNumber - 1)) // ths 
+               // .Take(auhtorResourceParameters.pageSize)
+               // .ToList();
         }
 
 

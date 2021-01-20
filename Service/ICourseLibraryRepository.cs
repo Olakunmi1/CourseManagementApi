@@ -1,4 +1,5 @@
 ﻿using CourseApi.Entities;
+using CourseApi.Helpers;
 using CourseApi.ReadDTO;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace CourseApi.Service
         List<SystemErrorLog> LogErrorMessage(string errorMessage, string errorSource);
 
         IEnumerable<Author> GetAuthors();
-        IEnumerable<Author> GetAuthors(AuhtorResourceParameters auhtorResourceParameters);
+        PagedList<Author> GetAuthors(AuhtorResourceParameters auhtorResourceParameters);
 
        // IEnumerable<Author> GetAuthors(string mainCategory, string searchQuery);
         Author GetAuthor(int authorId);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using CourseApi.Helpers;
@@ -26,12 +27,32 @@ namespace CourseApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllAuthors")]
+        [HttpGet("GetAllAuthors", Name ="GetAuthors")]
         public ActionResult<IEnumerable<AuhtorDTO>> GetAuthors([FromQuery] AuhtorResourceParameters auhtorResourceParameters)
         {
             try
             {
                 var GetAllAuthors = _courseLibrary.GetAuthors(auhtorResourceParameters);
+
+                //checking if there is a previous link, if there is calle dthe method, if not set to null
+                var previousPageLink = GetAllAuthors.HasPrevious ? CreateAuthorsResourceUris(auhtorResourceParameters, ResourceUriType.PreviousPage) : null;
+
+                var nextPageLink = GetAllAuthors.HasNext ? CreateAuthorsResourceUris(auhtorResourceParameters, ResourceUriType.NextPage) : null;
+
+                //then we create the MetaData we want to return to the user for guide 
+
+                var paginationMetaData = new
+                {
+                    totalCount = GetAllAuthors.Totalcount,
+                    pageSize = GetAllAuthors.PageSize,
+                    currentPage = GetAllAuthors.CurrentPage,
+                    previousPageLink,
+                    nextPageLink
+                };
+
+                //Adding to the header 
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetaData));
+               
 
                 //using Automapper for cleaner code instead of select Query,(seee below)
                 //the return type first(destination), then the source
@@ -143,6 +164,44 @@ namespace CourseApi.Controllers
             //        createdAuthor
             //    }
             //});
+        }
+
+        //this methods helps to create a Url link to previous Resource
+        private string CreateAuthorsResourceUris(AuhtorResourceParameters auhtorResourceParameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link("GetAuthors",
+                        new
+                        {
+                            PageNumber = auhtorResourceParameters.PageNumber - 1,
+                            PageSize = auhtorResourceParameters.pageSize,
+                            MainCategory = auhtorResourceParameters.mainCategory,
+                            SearchQuery = auhtorResourceParameters.searchQuery
+                        });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link("GetAuthors",
+                       new
+                       {
+                           PageNumber = auhtorResourceParameters.PageNumber + 1,
+                           PageSize = auhtorResourceParameters.pageSize,
+                           MainCategory = auhtorResourceParameters.mainCategory,
+                           SearchQuery = auhtorResourceParameters.searchQuery
+                       });
+                default:
+                    return Url.Link("GetAuthors",
+                       new
+                       {
+                           PageNumber = auhtorResourceParameters.PageNumber,
+                           PageSize = auhtorResourceParameters.pageSize,
+                           MainCategory = auhtorResourceParameters.mainCategory,
+                           SearchQuery = auhtorResourceParameters.searchQuery
+                       });
+
+            }
+
         }
 
     }
